@@ -1,6 +1,14 @@
-Izstrādes žurnāls:
+\# Project Plan
 
-\- 07.04.2026: Sakārtotas mapes
+:: - Modules:
 
-\- 08.04.2026: Izveidots storage.py
+::   - core
+
+::   - filtering
+
+::   - exporting
+
+:: - Tasks per module
+
+:: - Timeline
 
