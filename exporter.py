@@ -1,12 +1,16 @@
-import csv
+# exporter.py
+import json
+import os
 
-def export_to_csv(data, filename):
-    """Export list of dictionaries to a CSV file."""
-    if not data:
-        print("No data to export.")
-        return
-    with open(filename, "w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=data[0].keys())
-        writer.writeheader()
-        writer.writerows(data)
-    print(f"Data exported to {filename}")
+def export_data(data, filename="exported_data.json"):
+    """
+    Saglabā datus JSON failā pašreizējā direktorijā.
+    """
+    filepath = os.path.join(os.getcwd(), filename)
+    
+    try:
+        with open(filepath, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=4)
+        print(f"Dati saglabāti failā: {filepath}")
+    except Exception as e:
+        print(f"Kļūda datu saglabāšanā: {e}")
