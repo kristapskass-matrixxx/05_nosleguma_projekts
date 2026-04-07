@@ -1,16 +1,20 @@
-# exporter.py
-import json
-import os
+import csv
 
-def export_data(data, filename="exported_data.json"):
-    """
-    Saglabā datus JSON failā pašreizējā direktorijā.
-    """
-    filepath = os.path.join(os.getcwd(), filename)
-    
-    try:
-        with open(filepath, "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=4)
-        print(f"Dati saglabāti failā: {filepath}")
-    except Exception as e:
-        print(f"Kļūda datu saglabāšanā: {e}")
+def export_to_csv(data, filename):
+    """Saglabā datus CSV failā"""
+    with open(filename, mode='w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        # Pirmais rads: galvenes
+        writer.writerow(data[0].keys())
+        # Dati
+        for row in data:
+            writer.writerow(row.values())
+
+# Piemēra dati
+if __name__ == "__main__":
+    sample_data = [
+        {"Name": "Alice", "Age": 30, "City": "Riga"},
+        {"Name": "Bob", "Age": 25, "City": "Liepaja"}
+    ]
+    export_to_csv(sample_data, "output.csv")
+    print("Dati saglabāti output.csv")

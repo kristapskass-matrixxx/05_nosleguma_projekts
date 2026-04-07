@@ -1,16 +1,13 @@
-# main.py
-from exporter import export_data
+from exporter import export_to_csv
 
-def main():
-    data = {
-        "vards": "Kristaps",
-        "uzvards": "Kass",
-        "projekts": "05_nosleguma_projekts"
-    }
-
-    print("Datu apstrāde notiek...")
-    export_data(data)
-    print("Dati eksportēti veiksmīgi!")
+def get_data():
+    """Simulē datu iegūšanu no lietotāja"""
+    return [
+        {"Name": "Alice", "Age": 30, "City": "Riga"},
+        {"Name": "Bob", "Age": 25, "City": "Liepaja"}
+    ]
 
 if __name__ == "__main__":
-    main()
+    data = get_data()
+    export_to_csv(data, "output.csv")
+    print("Programma veiksmīgi izpildīta!")
