@@ -1,86 +1,75 @@
-# Noslēguma projekta DEVLOG
+# Izstrādes žurnāls (DEVLOG) — Izdevumu izsekotājs
 
-## Projekta nosaukums:
-Python datu eksportēšanas un apstrādes rīks
+## 1. posms — Projekta uzsākšana
+Sākotnēji tika definēta projekta ideja — izveidot izdevumu un ienākumu uzskaites sistēmu Python valodā.
 
-## Izmantotās Git branches:
-- main (galvenā branch)
-- feature/exporting (eksportēšanas funkcionalitāte)
+Galvenais mērķis bija:
+- saglabāt finanšu datus
+- nodrošināt vienkāršu lietotāja saskarni
+- eksportēt datus CSV formātā
 
-## Darba gaita:
+---
 
-### 1. Branch izveide
-Izveidojām feature/exporting branch:
-git checkout -b feature/exporting
+## 2. posms — Pamata funkcionalitāte
 
-### 2. Failu izveide un saturs
+Tika izstrādāta galvenā programma (app.py), kas ļauj:
 
-**main.py**
-from exporter import export_data
+- pievienot ienākumus un izdevumus
+- ievadīt datumu, summu, kategoriju un aprakstu
+- saglabāt datus JSON failā
 
-def main():
-    data = [
-        {"id": 1, "name": "Alice", "score": 95},
-        {"id": 2, "name": "Bob", "score": 88},
-        {"id": 3, "name": "Charlie", "score": 92}
-    ]
-    export_data(data, "output.csv")
+Problēma:
+- sākotnēji datu ievade nebija validēta
 
-if __name__ == "__main__":
-    main()
+Risinājums:
+- pievienota datuma un summas pārbaude
+- aizliegti negatīvi skaitļi
 
-**exporter.py**
-import csv
+---
 
-def export_data(data, filename):
-    with open(filename, mode="w", newline="") as file:
-        writer = csv.DictWriter(file, fieldnames=["id", "name", "score"])
-        writer.writeheader()
-        writer.writerows(data)
+## 3. posms — Datu struktūra un loģika
 
-### 3. Fails output.csv
-Pārbaudījām, ka fails `output.csv` satur:
-id,name,score
-1,Alice,95
-2,Bob,88
-3,Charlie,92
+Tika izdalīta atsevišķa loģika:
 
-### 4. Git darbības
+- storage.py — JSON saglabāšana
+- logic.py — aprēķini un validācija
+- export.py — CSV eksports
 
-Pievienojām un commitējām failus:
-git add main.py exporter.py docs\DEVLOG.md output.csv
-git commit -m "Add exporting feature and DEVLOG"
-git push -u origin feature/exporting
+Problēma:
+- sākotnēji viss bija vienā failā
 
-Merge uz main branch:
-git checkout main
-git merge feature/exporting
-git push origin main
+Risinājums:
+- kods tika sadalīts moduļos, lai uzlabotu uzturēšanu
 
-### 5. Secinājumi
-- Projekts tagad sagatavots demo un testēšanai
-- Visi faili glabājas GitHub repo
-- Dokumentācija pilnībā pieejama `docs/DEVLOG.md`
+---
 
-## DEVLOG – .gitignore pievienošana
+## 4. posms — Eksports un bilance
 
-**Datums:** 2026-04-07  
-**Veiktās darbības:**  
-1. Izveidots `.gitignore` fails projekta saknē.
-2. Failā iekļauti noteikumi, lai ignorētu:
-   - Python bytecode (`__pycache__/` un `*.pyc`)  
-   - Projektā ģenerētos output failus (`output.csv`)  
-   - OS automātiski ģenerētos failus (`.DS_Store`, `Thumbs.db`)
-3. No Git staging noņemti faili, kas tagad tiek ignorēti (`__pycache__` un `output.csv`).
+Tika pievienots CSV eksports un bilances aprēķins:
 
-**CMD komandas, lai izpildītu:**
+Bilance = ienākumi - izdevumi
 
-```cmd
-cd C:\Users\37129\Documents\Python_macibas\05_nosleguma_projekts
-notepad .gitignore
-type .gitignore
-git rm -r --cached __pycache__
-git rm --cached output.csv
-git add .gitignore main.py exporter.py
-git commit -m "Add .gitignore to ignore __pycache__ and output.csv"
-git push origin main
+Problēma:
+- CSV failā bija encoding problēmas
+
+Risinājums:
+- pievienots utf-8-sig encoding
+
+---
+
+## 5. posms — Noslēgums
+
+Projekts tika pilnveidots ar:
+
+- JSON datu saglabāšanu
+- CSV eksportu
+- validācijas sistēmu
+- modulāru struktūru
+
+Rezultātā tika iegūta pilnībā funkcionāla CLI finanšu uzskaites sistēma.
+
+---
+
+## Pašnovērtējums
+
+Projekts izdevās veiksmīgi un sasniedz izvirzītos mērķus. Tika apgūta datu apstrāde, failu struktūra un Python programmatūras arhitektūra.# filter update 
