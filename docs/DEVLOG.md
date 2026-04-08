@@ -61,3 +61,26 @@ git push origin main
 - Projekts tagad sagatavots demo un testēšanai
 - Visi faili glabājas GitHub repo
 - Dokumentācija pilnībā pieejama `docs/DEVLOG.md`
+
+## DEVLOG – .gitignore pievienošana
+
+**Datums:** 2026-04-07  
+**Veiktās darbības:**  
+1. Izveidots `.gitignore` fails projekta saknē.
+2. Failā iekļauti noteikumi, lai ignorētu:
+   - Python bytecode (`__pycache__/` un `*.pyc`)  
+   - Projektā ģenerētos output failus (`output.csv`)  
+   - OS automātiski ģenerētos failus (`.DS_Store`, `Thumbs.db`)
+3. No Git staging noņemti faili, kas tagad tiek ignorēti (`__pycache__` un `output.csv`).
+
+**CMD komandas, lai izpildītu:**
+
+```cmd
+cd C:\Users\37129\Documents\Python_macibas\05_nosleguma_projekts
+notepad .gitignore
+type .gitignore
+git rm -r --cached __pycache__
+git rm --cached output.csv
+git add .gitignore main.py exporter.py
+git commit -m "Add .gitignore to ignore __pycache__ and output.csv"
+git push origin main

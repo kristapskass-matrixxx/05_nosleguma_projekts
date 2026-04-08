@@ -1,10 +1,4 @@
-# Ignore Python bytecode files
 __pycache__/
 *.pyc
-
-# Ignore output files
-output.csv
-
-# Ignore OS generated files
-.DS_Store
-Thumbs.db
+activity.log
+logger.log

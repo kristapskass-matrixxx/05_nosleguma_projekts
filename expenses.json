@@ -1,0 +1,26 @@
+[
+  {
+    "date": "224",
+    "amount": 322.0,
+    "category": "Izprieca",
+    "description": "vecriga"
+  },
+  {
+    "date": "2026-04-08",
+    "amount": 600.0,
+    "category": "Izglītība",
+    "description": "macibu maksa"
+  },
+  {
+    "date": "222",
+    "amount": 80.0,
+    "category": "Transports",
+    "description": "degviela"
+  },
+  {
+    "date": "2026-04-08",
+    "amount": 600.0,
+    "category": "Izglītība",
+    "description": "semestra maksa"
+  }
+]
