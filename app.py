@@ -91,7 +91,6 @@ def pievienot(dati):
     print("\n--- Jauns ieraksts ---")
 
     datums = ievadi_datu()
-
     ienakumi = ievadi_summu("Ienākumi")
     izdevumi = ievadi_summu("Izdevumi")
 
@@ -113,6 +112,56 @@ def pievienot(dati):
     saglabat(dati)
 
     print(f"\n✓ Pievienots: {datums} | Bilance: {bilance:.2f} EUR")
+
+
+# ---------------------------
+# SKATĪT IERAKSTUS
+# ---------------------------
+def skatit(dati):
+    if not dati:
+        print("Nav ierakstu.")
+        return
+
+    print("\n--- Visi ieraksti ---")
+    for i, r in enumerate(dati, 1):
+        print(f"{i}. {r['datums']} | +{r['ienakumi']} -{r['izdevumi']} | Bilance: {r['bilance']}")
+
+
+# ---------------------------
+# DZĒST IERAKSTU
+# ---------------------------
+def dzest(dati):
+    skatit(dati)
+    if not dati:
+        return
+
+    try:
+        nr = int(input("Kuru ierakstu dzēst (numurs): "))
+        if 1 <= nr <= len(dati):
+            izdzests = dati.pop(nr - 1)
+            saglabat(dati)
+            print(f"✓ Dzēsts: {izdzests['datums']}")
+        else:
+            print("❌ Nepareizs numurs")
+    except ValueError:
+        print("❌ Jāievada skaitlis")
+
+
+# ---------------------------
+# FILTRS PĒC MĒNEŠA
+# ---------------------------
+def filtrs_menesis(dati):
+    menesis = input("Ievadi mēnesi (YYYY-MM): ").strip()
+
+    atrastie = [r for r in dati if r["datums"].startswith(menesis)]
+
+    if not atrastie:
+        print("Nav datu šim mēnesim.")
+        return
+
+    print("\n--- Filtrēti ieraksti ---")
+    for r in atrastie:
+        print(f"{r['datums']} | +{r['ienakumi']} -{r['izdevumi']} | Bilance: {r['bilance']}")
 
 
 # ---------------------------
@@ -154,16 +203,25 @@ def galvena():
 
     while True:
         print("\n1) Pievienot ierakstu")
-        print("2) Eksportēt CSV")
-        print("3) Beigt")
+        print("2) Skatīt ierakstus")
+        print("3) Dzēst ierakstu")
+        print("4) Filtrēt pēc mēneša")
+        print("5) Eksportēt CSV")
+        print("6) Beigt")
 
         izvele = input("Izvēlies: ").strip()
 
         if izvele == "1":
             pievienot(dati)
         elif izvele == "2":
-            eksportet_csv(dati)
+            skatit(dati)
         elif izvele == "3":
+            dzest(dati)
+        elif izvele == "4":
+            filtrs_menesis(dati)
+        elif izvele == "5":
+            eksportet_csv(dati)
+        elif izvele == "6":
             break
         else:
             print("❌ Nederīga izvēle!")

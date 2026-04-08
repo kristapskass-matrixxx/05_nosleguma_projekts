@@ -1,4 +1,5 @@
 __pycache__/
 *.pyc
 activity.log
-logger.log
+logger.logexport.csv 
+finanses.json 
