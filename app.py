@@ -5,10 +5,15 @@ from datetime import datetime
 
 FAILS = "finanses.json"
 
+IZDEVUMU_VEIDI = [
+    "Ikdienas patēriņš",
+    "Izklaide",
+    "Neplānotie izdevumi",
+    "Ikmēneša pakalpojumi",
+    "Ārstniecība un Izglītība"
+]
 
-# ---------------------------
-# JSON ielāde / saglabāšana
-# ---------------------------
+
 def ieladet():
     if not os.path.exists(FAILS):
         return []
@@ -24,26 +29,52 @@ def saglabat(dati):
         json.dump(dati, f, indent=4, ensure_ascii=False)
 
 
-# ---------------------------
-# DATUMA VALIDĀCIJA (UZLABOTA)
-# ---------------------------
 def ievadi_datu():
     while True:
-        datums = input("Datums (YYYY-MM-DD) [šodiena]: ").strip()
+        datums = input("Datums (YYYY-MM-DD vai YYYYMMDD) [šodiena]: ").strip()
 
         if datums == "":
-            return datetime.today().strftime("%Y-%m-%d")
+            datums = datetime.today().strftime("%Y-%m-%d")
 
         try:
+            if len(datums) == 8 and datums.isdigit():
+                datums = f"{datums[:4]}-{datums[4:6]}-{datums[6:]}"
+
             datetime.strptime(datums, "%Y-%m-%d")
-            return datums
+
+            gads, menesis, diena = datums.split("-")
+
+            print(f"✓ Datums saglabāts kā: {datums}")
+
+            return datums, int(gads), int(menesis), int(diena)
+
         except ValueError:
-            print("❌ Nederīgs datums! Lieto YYYY-MM-DD")
+            print("❌ Nederīgs datums! Lieto YYYY-MM-DD vai YYYYMMDD")
 
 
-# ---------------------------
-# SUMMA
-# ---------------------------
+def izveleties_vairakus_veidus():
+    veidi = []
+
+    while True:
+        print("\nIzvēlies izdevumu veidu:")
+        for i, v in enumerate(IZDEVUMU_VEIDI, 1):
+            print(f"{i}) {v}")
+
+        try:
+            izvēle = int(input("Izvēlies (1-5): "))
+            if 1 <= izvēle <= len(IZDEVUMU_VEIDI):
+                veidi.append(IZDEVUMU_VEIDI[izvēle - 1])
+        except ValueError:
+            print("❌ Nepareiza izvēle!")
+            continue
+
+        vel = input("Vai pievienot vēl? (J/N): ").strip().upper()
+        if vel == "N":
+            break
+
+    return veidi
+
+
 def ievadi_summu(nosaukums):
     while True:
         v = input(f"{nosaukums} (EUR): ").strip()
@@ -61,9 +92,6 @@ def ievadi_summu(nosaukums):
             print("❌ Ievadi skaitli!")
 
 
-# ---------------------------
-# KOMENTĀRS
-# ---------------------------
 def ievadi_komentaru(nosaukums, summa):
     if summa == 0:
         return ""
@@ -71,64 +99,90 @@ def ievadi_komentaru(nosaukums, summa):
     while True:
         komentars = input(f"{nosaukums} komentārs: ").strip()
 
-        if komentars:
-            return komentars
+        if komentars == "":
+            atb = input("Komentārs tukšs! Vai atstāt tukšu? (J/N): ").strip().upper()
+            if atb == "J":
+                return ""
+            elif atb == "N":
+                continue
 
-        atb = input("Vai atstāt tukšu? (J/N): ").strip().upper()
-        if atb == "J":
-            return ""
-        elif atb == "N":
+        print(f"Ievadītais komentārs: {komentars}")
+
+        labot = input("Vai labot komentāru? (J/N): ").strip().upper()
+
+        if labot == "J":
             continue
+        elif labot == "N":
+            return komentars
+        else:
+            print("❌ Ievadi J vai N!")
 
 
-# ---------------------------
-# PIEVIENOT
-# ---------------------------
 def pievienot(dati):
     print("\n--- Jauns ieraksts ---")
 
-    datums = ievadi_datu()
+    datums, gads, menesis, diena = ievadi_datu()
+
     ienakumi = ievadi_summu("Ienākumi")
+    ienakumu_komentars = ievadi_komentaru("Ienākumu", ienakumi)
+
     izdevumi = ievadi_summu("Izdevumi")
+
+    izdevumu_veidi = []
+    izdevumu_komentars = ""
+
+    if izdevumi > 0:
+        izdevumu_veidi = izveleties_vairakus_veidus()
+        izdevumu_komentars = ievadi_komentaru("Izdevumu", izdevumi)
 
     ieraksts = {
         "datums": datums,
+        "gads": gads,
+        "menesis": menesis,
+        "diena": diena,
         "ienakumi": ienakumi,
         "izdevumi": izdevumi,
-        "ienakumu_komentars": ievadi_komentaru("Ienākumu", ienakumi),
-        "izdevumu_komentars": ievadi_komentaru("Izdevumu", izdevumi),
+        "izdevumu_veidi": izdevumu_veidi,
+        "ienakumu_komentars": ienakumu_komentars,
+        "izdevumu_komentars": izdevumu_komentars,
         "bilance": round(ienakumi - izdevumi, 2)
     }
+
+    print("\n--- PĀRSKATS ---")
+    print(f"Datums: {datums}")
+    print(f"Ienākumi: {ienakumi} EUR ({ienakumu_komentars})")
+    print(f"Izdevumi: {izdevumi} EUR ({izdevumu_komentars})")
+    print(f"Veidi: {', '.join(izdevumu_veidi) if izdevumu_veidi else '-'}")
+    print(f"Bilance: {ieraksts['bilance']:.2f} EUR")
+
+    apstiprinat = input("\nSaglabāt šo ierakstu? (J/N): ").strip().upper()
+
+    if apstiprinat != "J":
+        print("❌ Ieraksts netika saglabāts")
+        return
 
     dati.append(ieraksts)
     saglabat(dati)
 
-    print(f"\n✓ Pievienots: {datums} | Bilance: {ieraksts['bilance']:.2f} EUR")
+    print("✅ Ieraksts saglabāts!")
 
 
-# ---------------------------
-# SKATĪT
-# ---------------------------
 def skatit(dati):
     if not dati:
         print("Nav ierakstu.")
         return
 
     print("\n--- Visi ieraksti ---")
-    print(f"{'Datums':<12}{'Ienākumi':>10}{'Izdevumi':>10}{'Bilance':>10}")
-    print("-" * 45)
+    print(f"{'Datums':<12}{'Izdevumi':>10} {'Veidi'}")
+    print("-" * 50)
 
     for r in dati:
-        print(f"{r['datums']:<12}{r['ienakumi']:>10.2f}{r['izdevumi']:>10.2f}{r['bilance']:>10.2f}")
+        veidi = ", ".join(r.get("izdevumu_veidi", []))
+        print(f"{r['datums']:<12}{r['izdevumi']:>10.2f} {veidi}")
 
 
-# ---------------------------
-# DZĒST
-# ---------------------------
 def dzest(dati):
     skatit(dati)
-    if not dati:
-        return
 
     try:
         nr = int(input("Kuru dzēst (numurs): "))
@@ -142,9 +196,6 @@ def dzest(dati):
         print("❌ Jāievada skaitlis")
 
 
-# ---------------------------
-# FILTRS (UZLABOTS ar datetime)
-# ---------------------------
 def filtrs_menesis(dati):
     menesis = input("Ievadi mēnesi (YYYY-MM): ").strip()
 
@@ -157,51 +208,55 @@ def filtrs_menesis(dati):
     atrastie = [r for r in dati if r["datums"].startswith(menesis)]
 
     if not atrastie:
-        print("Nav datu šim mēnesim.")
+        print("Nav datu.")
         return
+
+    total = 0
 
     print("\n--- Filtrēti ieraksti ---")
     for r in atrastie:
-        print(f"{r['datums']} | +{r['ienakumi']} -{r['izdevumi']} | {r['bilance']}")
+        print(f"{r['datums']} | -{r['izdevumi']} | {', '.join(r.get('izdevumu_veidi', []))}")
+        total += r["izdevumi"]
+
+    print("--------------------------")
+    print(f"KOPĀ: {total:.2f} EUR")
 
 
-# ---------------------------
-# CSV EKSPORTS (UZLABOTS)
-# ---------------------------
 def eksportet_csv(dati):
     faila_nosaukums = input("Faila nosaukums [finanses.csv]: ").strip()
-
     if faila_nosaukums == "":
         faila_nosaukums = "finanses.csv"
 
     with open(faila_nosaukums, "w", encoding="utf-8-sig", newline="") as f:
         writer = csv.writer(f)
 
-        writer.writerow([
-            "Datums",
-            "Ienākumi",
-            "Izdevumi",
-            "Ienākumu komentārs",
-            "Izdevumu komentārs",
-            "Bilance"
-        ])
+        writer.writerow(["Datums", "Izdevumi", "Veidi"])
 
         for i in dati:
             writer.writerow([
                 i["datums"],
-                i["ienakumi"],
                 i["izdevumi"],
-                i["ienakumu_komentars"],
-                i["izdevumu_komentars"],
-                i["bilance"]
+                ", ".join(i.get("izdevumu_veidi", []))
             ])
 
     print(f"✓ CSV eksportēts -> {faila_nosaukums}")
 
 
-# ---------------------------
-# GALVENĀ IZVĒLNE (UZLABOTA CLI)
-# ---------------------------
+def statistika(dati):
+    if not dati:
+        print("Nav datu.")
+        return
+
+    total_ienakumi = sum(r["ienakumi"] for r in dati)
+    total_izdevumi = sum(r["izdevumi"] for r in dati)
+    bilance = total_ienakumi - total_izdevumi
+
+    print("\n--- STATISTIKA ---")
+    print(f"Kopējie ienākumi: {total_ienakumi:.2f} EUR")
+    print(f"Kopējie izdevumi: {total_izdevumi:.2f} EUR")
+    print(f"Kopējā bilance: {bilance:.2f} EUR")
+
+
 def galvena():
     dati = ieladet()
 
@@ -214,7 +269,8 @@ def galvena():
         print("3) Dzēst ierakstu")
         print("4) Filtrēt pēc mēneša")
         print("5) Eksportēt CSV")
-        print("6) Iziet")
+        print("6) Statistika")
+        print("7) Iziet")
 
         izvele = input("\nIzvēlies: ").strip()
 
@@ -229,6 +285,8 @@ def galvena():
         elif izvele == "5":
             eksportet_csv(dati)
         elif izvele == "6":
+            statistika(dati)
+        elif izvele == "7":
             print("Uz redzēšanos!")
             break
         else:

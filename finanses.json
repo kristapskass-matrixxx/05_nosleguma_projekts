@@ -1,0 +1,80 @@
+[
+    {
+        "datums": "2026-04-08",
+        "gads": 2026,
+        "menesis": 4,
+        "diena": 8,
+        "ienakumi": 0.0,
+        "izdevumi": 386.0,
+        "izdevumu_veids": "Neplānotie izdevumi",
+        "ienakumu_komentars": "",
+        "izdevumu_komentars": "emociju pirkums",
+        "bilance": -386.0
+    },
+    {
+        "datums": "2026-05-11",
+        "gads": 2026,
+        "menesis": 5,
+        "diena": 11,
+        "ienakumi": 0.0,
+        "izdevumi": 0.0,
+        "izdevumu_veidi": [],
+        "ienakumu_komentars": "",
+        "izdevumu_komentars": "",
+        "bilance": 0.0
+    },
+    {
+        "datums": "2026-04-08",
+        "gads": 2026,
+        "menesis": 4,
+        "diena": 8,
+        "ienakumi": 0.0,
+        "izdevumi": 0.0,
+        "izdevumu_veidi": [],
+        "ienakumu_komentars": "",
+        "izdevumu_komentars": "",
+        "bilance": 0.0
+    },
+    {
+        "datums": "2026-04-08",
+        "gads": 2026,
+        "menesis": 4,
+        "diena": 8,
+        "ienakumi": 22.0,
+        "izdevumi": 322.0,
+        "izdevumu_veidi": [
+            "Ikdienas patēriņš",
+            "Ārstniecība un Izglītība"
+        ],
+        "ienakumu_komentars": "maize un zobu proteze",
+        "izdevumu_komentars": "kludijos - maize un zobu proteze izdevumos",
+        "bilance": -300.0
+    },
+    {
+        "datums": "2026-04-08",
+        "gads": 2026,
+        "menesis": 4,
+        "diena": 8,
+        "ienakumi": 357.0,
+        "izdevumi": 0.0,
+        "izdevumu_veidi": [],
+        "ienakumu_komentars": "",
+        "izdevumu_komentars": "",
+        "bilance": 357.0
+    },
+    {
+        "datums": "2026-04-08",
+        "gads": 2026,
+        "menesis": 4,
+        "diena": 8,
+        "ienakumi": 311.0,
+        "izdevumi": 498.0,
+        "izdevumu_veidi": [
+            "Ikmēneša pakalpojumi",
+            "Neplānotie izdevumi"
+        ],
+        "ienakumu_komentars": "davana",
+        "izdevumu_komentars": "Telefona rekins un remonts",
+        "bilance": -187.0
+    }
+]
