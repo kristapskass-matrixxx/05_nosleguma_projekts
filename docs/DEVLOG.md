@@ -73,3 +73,4 @@ Rezultātā tika iegūta pilnībā funkcionāla CLI finanšu uzskaites sistēma.
 ## Pašnovērtējums
 
 Projekts izdevās veiksmīgi un sasniedz izvirzītos mērķus. Tika apgūta datu apstrāde, failu struktūra un Python programmatūras arhitektūra.# filter update 
+# export update 
