@@ -57,5 +57,13 @@
         "expense": 162.0,
         "balance": -122.0,
         "description": "krogs"
+    },
+    {
+        "date": "2024-02-11",
+        "category": "Izprieca",
+        "income": 0.0,
+        "expense": 1.0,
+        "balance": -1.0,
+        "description": "nav"
     }
 ]

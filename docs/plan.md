@@ -1,56 +1,61 @@
-\# Projekta plāns
+# Projekta plāns — Izdevumu izsekotājs
 
+## Mērķis
+Izveidot Python komandrindas lietotni, kas ļauj lietotājam sekot ienākumiem un izdevumiem, saglabāt datus JSON failā un eksportēt CSV formātā.
 
+---
 
-\## A. Programmas apraksts
+## Funkcijas
 
-Izdevumu izsekotājs reģistrē lietotāja izdevumus, grupē pa kategorijām un mēnešiem, nodrošina kopsummas un CSV eksporta iespēju.
+- Pievienot ienākumus
+- Pievienot izdevumus
+- Apskatīt visus ierakstus
+- Dzēst ierakstus
+- Filtrēt pēc mēneša
+- Aprēķināt bilanci (ienākumi - izdevumi)
+- Eksportēt datus CSV failā
+- Saglabāt datus JSON failā
 
+---
 
+## Datu ievade
 
-\## B. Datu struktūra
+- Datums (YYYY-MM-DD)
+- Ienākumi (pozitīvs skaitlis vai 0)
+- Izdevumi (pozitīvs skaitlis vai 0)
+- Kategorija
+- Apraksts (var būt tukšs ar apstiprinājumu J/N)
 
-Viens izdevuma ieraksts:
+---
 
-{
+## Robežgadījumi
 
-&#x20; "date": "2025-02-25",
+- Nederīgs datums → ievade tiek noraidīta
+- Negatīva summa → nav atļauta
+- Tukšs apraksts → lietotājam jautā “Vai atstāt tukšu? (J/N)”
+- Nepareiza izvēle izvēlnē → tiek prasīts ievadīt vēlreiz
 
-&#x20; "amount": 12.50,
+---
 
-&#x20; "category": "Ēdiens",
+## Tehnoloģijas
 
-&#x20; "description": "Pusdienas kafejnīcā"
+- Python 3
+- JSON failu glabāšana
+- CSV eksports
+- datetime modulis
+- CLI (komandrindas interfeiss)
 
-}
+---
 
+## Projekta struktūra
 
+- app.py — galvenā programma (izvēlne)
+- logic.py — biznesa loģika
+- storage.py — JSON lasīšana / rakstīšana
+- export.py — CSV eksports
 
-\## C. Moduļu plāns
+---
 
-\- app.py: CLI izvēlne, lietotāja mijiedarbība
+## Rezultāts
 
-\- storage.py: JSON failu load/save
-
-\- logic.py: filtrēšana, kopsummas, datu analīze
-
-\- export.py: CSV eksports
-
-
-
-\## D. Lietotāja scenāriji
-
-1\. Lietotājs pievieno izdevumu; programma validē datumu un summu.
-
-2\. Lietotājs filtrē pēc mēneša; programma rāda tikai izvēlēto mēnesi.
-
-
-
-\## E. Robežgadījumi
-
-\- expenses.json neeksistē: load\_expenses() atgriež \[]
-
-\- Nepareiza summa vai datums: tiek parādīts kļūdas paziņojums
-
-\- Tukšs saraksts: "Nav izdevumu"
-
+Pilnībā funkcionāls izdevumu izsekotājs, kas ļauj analizēt finanšu plūsmu un saglabāt datus starp sesijām.

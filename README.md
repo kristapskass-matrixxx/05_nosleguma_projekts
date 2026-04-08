@@ -1,38 +1,28 @@
-# \# Noslēguma Projekts - Data Exporter
+\# Izdevumu izsekotājs
 
-# 
 
-# Apraksts:
 
-# Šis projekts demonstrē datu eksportēšanu no Python programmas uz CSV.
+\## Kā palaist
 
-# 
+python app.py
 
-# Faili:
 
-# \- main.py - Galvenā programma
 
-# \- exporter.py - Eksporta funkcijas uz CSV
+\## Funkcijas
 
-# \- output.csv - Eksportēto datu fails
+\- pievienot ienākumus
 
-# \- docs/DEVLOG.md - Projekta devlogs
+\- pievienot izdevumus
 
-# 
+\- dzēst ierakstus
 
-# Lietošana:
+\- CSV eksports
 
-# 1\. Palaid main.py ar Python:
+\- JSON saglabāšana
 
-# &#x20;  python main.py
 
-# 2\. Pārbaudi, vai radās output.csv
 
-# 3\. Datus var atvērt ar Excel vai Notepad
+\## Autors
 
-# 
-
-# Autors:
-
-# Kristaps Kass
+Kristaps Kašs
 

@@ -20,3 +20,11 @@ def category_summary(data):
         summary[cat] = summary.get(cat, 0) + d.get("expense", 0)
 
     return summary
+
+
+def filter_by_month(data, month):
+    # month formāts: "2026-04"
+    return [
+        d for d in data
+        if d.get("date", "").startswith(month)
+    ]

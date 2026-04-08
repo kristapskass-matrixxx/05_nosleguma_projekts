@@ -1,83 +1,173 @@
-from storage import load_data, save_data
-from logic import validate_date, calculate_balance
-from export import export_csv
+import json
+import os
+from datetime import datetime
 
-def add_record(data):
-    date = input("Datums (YYYY-MM-DD): ")
+FAILS = "finanses.json"
 
-    if not validate_date(date):
-        print("❌ Nederīgs datums")
-        return
 
-    print("Kategorija:")
-    print("1) Pārtika")
-    print("2) Transports")
-    print("3) Izglītība")
-    print("4) Izprieca")
+# ---------------------------
+# JSON ielāde / saglabāšana
+# ---------------------------
+def ieladet():
+    if not os.path.exists(FAILS):
+        return []
+    with open(FAILS, "r", encoding="utf-8") as f:
+        try:
+            return json.load(f)
+        except json.JSONDecodeError:
+            return []
 
-    categories = {
-        "1": "Pārtika",
-        "2": "Transports",
-        "3": "Izglītība",
-        "4": "Izprieca"
+
+def saglabat(dati):
+    with open(FAILS, "w", encoding="utf-8") as f:
+        json.dump(dati, f, indent=4, ensure_ascii=False)
+
+
+# ---------------------------
+# DATUMA VALIDĀCIJA
+# ---------------------------
+def ievadi_datu():
+    while True:
+        datums = input("Datums (YYYY-MM-DD) [šodiena]: ").strip()
+
+        if datums == "":
+            return datetime.today().strftime("%Y-%m-%d")
+
+        try:
+            datetime.strptime(datums, "%Y-%m-%d")
+            return datums
+        except ValueError:
+            print("❌ Nederīgs datums!")
+
+
+# ---------------------------
+# SUMMAS IEVADĪŠANA
+# ---------------------------
+def ievadi_summu(nosaukums):
+    while True:
+        v = input(f"{nosaukums} (EUR): ").strip()
+
+        if v == "":
+            return 0.0
+
+        try:
+            v = float(v)
+            if v < 0:
+                print("❌ Nedrīkst būt negatīvs!")
+                continue
+            return v
+        except ValueError:
+            print("❌ Ievadi skaitli!")
+
+
+# ---------------------------
+# KOMENTĀRA LOĢIKA
+# ---------------------------
+def ievadi_komentaru(nosaukums, summa):
+    if summa == 0:
+        return ""
+
+    while True:
+        komentars = input(f"{nosaukums} komentārs: ").strip()
+
+        if komentars != "":
+            return komentars
+
+        print("⚠ Komentārs tukšs!")
+        atb = input("Vai atstāt tukšu? (J/N): ").strip().upper()
+
+        if atb == "J":
+            return ""
+        elif atb == "N":
+            continue
+        else:
+            print("❌ Ievadi J vai N!")
+
+
+# ---------------------------
+# PIEVIENOT IERAKSTU
+# ---------------------------
+def pievienot(dati):
+    print("\n--- Jauns ieraksts ---")
+
+    datums = ievadi_datu()
+
+    ienakumi = ievadi_summu("Ienākumi")
+    izdevumi = ievadi_summu("Izdevumi")
+
+    ienakumu_kom = ievadi_komentaru("Ienākumu", ienakumi)
+    izdevumu_kom = ievadi_komentaru("Izdevumu", izdevumi)
+
+    bilance = ienakumi - izdevumi
+
+    ieraksts = {
+        "datums": datums,
+        "ienakumi": ienakumi,
+        "izdevumi": izdevumi,
+        "ienakumu_komentars": ienakumu_kom,
+        "izdevumu_komentars": izdevumu_kom,
+        "bilance": bilance
     }
 
-    cat = categories.get(input("Izvēlies: "), "Cits")
+    dati.append(ieraksts)
+    saglabat(dati)
 
-    income = float(input("Ienākumi: "))
-    expense = float(input("Izdevumi: "))
-
-    description = input("Apraksts: ")
-
-    balance = calculate_balance(income, expense)
-
-    record = {
-        "date": date,
-        "category": cat,
-        "income": income,
-        "expense": expense,
-        "balance": balance,
-        "description": description
-    }
-
-    data.append(record)
-    save_data(data)
-
-    print(f"✓ Saglabāts | Bilance: {balance} EUR")
+    print(f"\n✓ Pievienots: {datums} | Bilance: {bilance:.2f} EUR")
 
 
-def show_summary(data):
-    total_income = sum(d.get("income", 0) for d in data)
-    total_expense = sum(d.get("expense", 0) for d in data)
+# ---------------------------
+# CSV EKSPORTS
+# ---------------------------
+def eksportet_csv(dati):
+    import csv
 
-    print("\n===== KOPSAVILKUMS =====")
-    print(f"Ienākumi: {total_income}")
-    print(f"Izdevumi: {total_expense}")
-    print(f"Bilance: {total_income - total_expense}")
-    print("========================\n")
+    with open("finanses.csv", "w", encoding="utf-8-sig", newline="") as f:
+        writer = csv.writer(f)
+
+        writer.writerow([
+            "Datums",
+            "Ienākumi",
+            "Izdevumi",
+            "Ienākumu komentārs",
+            "Izdevumu komentārs",
+            "Bilance"
+        ])
+
+        for i in dati:
+            writer.writerow([
+                i.get("datums", ""),
+                i.get("ienakumi", 0),
+                i.get("izdevumi", 0),
+                i.get("ienakumu_komentars", ""),
+                i.get("izdevumu_komentars", ""),
+                i.get("bilance", 0)
+            ])
+
+    print("✓ CSV eksportēts")
 
 
-def main():
-    data = load_data()
+# ---------------------------
+# GALVENĀ PROGRAMMA
+# ---------------------------
+def galvena():
+    dati = ieladet()
 
     while True:
         print("\n1) Pievienot ierakstu")
         print("2) Eksportēt CSV")
-        print("3) Kopsavilkums")
-        print("4) Beigt")
+        print("3) Beigt")
 
-        choice = input("Izvēlies: ")
+        izvele = input("Izvēlies: ").strip()
 
-        if choice == "1":
-            add_record(data)
-        elif choice == "2":
-            export_csv(data)
-            print("✓ CSV eksportēts")
-        elif choice == "3":
-            show_summary(data)
-        elif choice == "4":
+        if izvele == "1":
+            pievienot(dati)
+        elif izvele == "2":
+            eksportet_csv(dati)
+        elif izvele == "3":
             break
+        else:
+            print("❌ Nederīga izvēle!")
 
 
 if __name__ == "__main__":
-    main()
+    galvena()
