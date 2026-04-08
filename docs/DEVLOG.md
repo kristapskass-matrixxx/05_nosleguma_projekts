@@ -28,5 +28,11 @@
 
 \- Faili komitēti branch `feature/exporting`.
 
-\- Sagatavots gala projekta merge ar `main`.
+\- Sagatavots gala projekta merge ar ## Testēšana
+
+- Pārbaudīts, ka `output.csv` satur datus no `sample_data`.
+- Dati pareizi eksportēti, kolonnas atbilst specifikācijai.
+- Faila atvēršana un lasīšana notiek bez kļūdām.
+
+
 
